@@ -28,8 +28,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import ua.opu.contactsapp.data.Contact
-import ua.opu.contactsapp.data.initials
+import ua.opu.contactsapp.domain.model.Contact
+import ua.opu.contactsapp.domain.model.initials
 import ua.opu.contactsapp.ui.theme.CardBorder
 import ua.opu.contactsapp.ui.theme.SecondaryText
 import ua.opu.contactsapp.ui.viewmodel.ContactsListUiState

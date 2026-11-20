@@ -3,6 +3,7 @@ package ua.opu.contactsapp.navigation
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
@@ -13,7 +14,9 @@ import androidx.navigation.navArgument
 import ua.opu.contactsapp.ui.screens.AddContactScreen
 import ua.opu.contactsapp.ui.screens.ContactsListScreen
 import ua.opu.contactsapp.ui.screens.DetailsContactScreen
-import ua.opu.contactsapp.ui.viewmodel.ContactsViewModel
+import ua.opu.contactsapp.ui.viewmodel.ContactDetailsUiState
+import ua.opu.contactsapp.ui.viewmodel.ContactViewModel
+import ua.opu.contactsapp.ui.viewmodel.ContactsListUiState
 
 object AppRoutes {
     const val CONTACT_ID = "contactId"
@@ -29,7 +32,7 @@ object AppRoutes {
 
 @Composable
 fun AppNavigation(
-    viewModel: ContactsViewModel,
+    viewModel: ContactViewModel,
     navController: NavHostController = rememberNavController()
 ) {
     NavHost(
@@ -37,10 +40,10 @@ fun AppNavigation(
         startDestination = AppRoutes.CONTACTS_LIST
     ) {
         composable(route = AppRoutes.CONTACTS_LIST) {
-            val uiState by viewModel.contactsListUiState.collectAsStateWithLifecycle()
+            val contacts by viewModel.contacts.collectAsStateWithLifecycle()
 
             ContactsListScreen(
-                uiState = uiState,
+                uiState = ContactsListUiState(contacts = contacts),
                 onAddClick = {
                     viewModel.prepareNewContact()
                     navController.navigate(AppRoutes.CONTACT_ADD)
@@ -98,24 +101,18 @@ fun AppNavigation(
             route = AppRoutes.CONTACT_DETAILS,
             arguments = listOf(navArgument(AppRoutes.CONTACT_ID) { type = NavType.IntType })
         ) { backStackEntry ->
-            val contactId = backStackEntry.arguments?.getInt(AppRoutes.CONTACT_ID)
-
-            LaunchedEffect(contactId) {
-                if (contactId != null) {
-                    viewModel.prepareDetails(contactId)
-                }
-            }
-
-            val uiState by viewModel.contactDetailsUiState.collectAsStateWithLifecycle()
+            val contactId = backStackEntry.arguments?.getInt(AppRoutes.CONTACT_ID) ?: 0
+            val contactFlow = remember(contactId) { viewModel.getContactById(contactId) }
+            val contact by contactFlow.collectAsStateWithLifecycle(initialValue = null)
 
             DetailsContactScreen(
-                uiState = uiState,
+                uiState = ContactDetailsUiState(contact = contact),
                 onBackClick = { navController.popBackStack() },
                 onEditClick = { id ->
                     navController.navigate(AppRoutes.contactEdit(id))
                 },
-                onDeleteClick = { id ->
-                    viewModel.deleteContact(id)
+                onDeleteClick = {
+                    contact?.let { viewModel.deleteContact(it) }
                     navController.popBackStack()
                 }
             )

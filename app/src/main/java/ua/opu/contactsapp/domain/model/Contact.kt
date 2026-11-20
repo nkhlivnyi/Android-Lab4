@@ -1,4 +1,4 @@
-package ua.opu.contactsapp.data
+package ua.opu.contactsapp.domain.model
 
 data class Contact(
     val id: Int,

@@ -7,6 +7,7 @@ activityCompose = "1.13.0"
 composeBom = "2026.03.01"
 compose = "1.7.8"
 navigationCompose = "2.9.8"
+ksp = "2.3.6"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -27,3 +28,4 @@ androidx-navigation-compose = { group = "androidx.navigation", name = "navigatio
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
 kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
+ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }

@@ -1,6 +1,6 @@
 package ua.opu.contactsapp.ui.viewmodel
 
-import ua.opu.contactsapp.data.Contact
+import ua.opu.contactsapp.domain.model.Contact
 
 data class ContactsListUiState(
     val contacts: List<Contact> = emptyList()
